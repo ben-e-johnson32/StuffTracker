@@ -42,8 +42,20 @@ def GetProduct(itemID):
     cursor.execute('SELECT * FROM PRODUCTS WHERE ID = (?)', (itemID,))
     item = cursor.fetchone()
     db.close()
-    print(item)
     return item
+
+
+# A method that gets all the products from the database.
+def GetAllProducts():
+    os.chdir(os.path.dirname(__file__))
+    cwd = os.getcwd()
+    db = lite.connect(cwd + '/static/products.db')
+    cursor = db.cursor()
+
+    cursor.execute('SELECT * FROM PRODUCTS')
+    rows = cursor.fetchall()
+    db.close()
+    return rows
 
 
 # p = products.Product(name="Macbook Pro", desc="This laptop looks just like a TV.", price=1200.50, age=7,

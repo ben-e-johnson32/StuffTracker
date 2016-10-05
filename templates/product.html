@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<!-- The myHero stuff is from here: http://www.w3schools.com/html/html5_browsers.asp
+     This is just a little example template I'm using to figure out this html/jinja stuff.
+     Needs to be updated to match products.html - maybe figure out a way to use inheritance here?
+!-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StuffTracker | {{ product.name }}</title>
+    <script>document.createElement("myHero")</script>
+    <style>
+        myHero {
+            display: block;
+            background-color: #aaabbf;
+            padding: 50px;
+            font-size: 30px;
+        }
+    </style>
+</head>
+<body>
+<h1 style="text-align:center;">{{ product.name }}</h1>
+<img src="{{ product.image }}">
+<myHero>{{ product.desc }}</myHero>
+<p><strong>Price: </strong> {{ product.price }}</p>
+<p><strong>Location: </strong> {{ product.location }}</p>
+<p align="center"><a href="{{ url_for('show_products') }}">Return to Products Page</a></p>
+<p align="center"><a href="/">Return to Home Page</a></p>
+</body>
+</html>
