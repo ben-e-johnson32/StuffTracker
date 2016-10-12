@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy import create_engine, Column, Integer, String, Float, desc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import sqlite3 as lite
@@ -11,6 +11,7 @@ Base = declarative_base()
 Session = sessionmaker(bind=engine)
 
 
+# The Product class using SQLAlchemy. Maps the columns of the table to the variables of the object.
 class Product(Base):
     __tablename__ = "Products"
     id = Column(Integer, primary_key=True)
@@ -37,6 +38,7 @@ def CreateProductsTable():
     db.close()
 
 
+# Add a product object to the database.
 def EnterProduct(p):
     session = Session()
     session.add(p)
@@ -44,6 +46,7 @@ def EnterProduct(p):
     session.close()
 
 
+# Get one product from the database based on its ID.
 def GetProduct(itemID):
     session = Session()
     product = session.query(Product).filter(Product.id == itemID).first()
@@ -51,12 +54,38 @@ def GetProduct(itemID):
     return product
 
 
-def GetAllProducts():
+# Get all products from the database in the order chosen.
+def GetAllProducts(orderby):
     session = Session()
     products = []
-
-    for p in session.query(Product).all():
-        products.append(p)
-
-    session.close()
-    return products
+    # A big if/else to determine the order of the product list that's returned.
+    if orderby is None:
+        for p in session.query(Product).all():
+            products.append(p)
+        session.close()
+        return products
+    elif orderby == 'value':
+        for p in session.query(Product).order_by(desc(Product.price)):
+            products.append(p)
+        session.close()
+        return products
+    elif orderby == 'alphabetical':
+        for p in session.query(Product).order_by(Product.name):
+            products.append(p)
+        session.close()
+        return products
+    elif orderby == 'location':
+        for p in session.query(Product).order_by(Product.location):
+            products.append(p)
+        session.close()
+        return products
+    elif orderby == 'newest':
+        for p in session.query(Product).order_by(desc(Product.year_acquired)):
+            products.append(p)
+        session.close()
+        return products
+    elif orderby == 'oldest':
+        for p in session.query(Product).order_by(Product.year_acquired):
+            products.append(p)
+        session.close()
+        return products

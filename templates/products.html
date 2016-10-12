@@ -64,5 +64,17 @@
 {# Links back to the other main pages. #}
 <h2 align="center"><strong><a href="add_product">Add New Product</a></strong></h2>
 <p align="center"><a href="/">Return to Home Page</a></p>
+{# Radio buttons allowing the user to choose the order in which the products appear. #}
+<form action="/products", method="post">
+    <p align="center">
+        Order Products By: <br>
+        <input type="radio", name="orderby", value="alphabetical"> Alphabetical
+        <input type="radio", name="orderby", value="location"> Location
+        <input type="radio", name="orderby", value="value"> Value <br>
+        <input type="radio", name="orderby", value="newest"> Newest
+        <input type="radio", name="orderby", value="oldest"> Oldest <br>
+        <input type="submit", value="Go">
+    </p>
+</form>
 </body>
 </html>

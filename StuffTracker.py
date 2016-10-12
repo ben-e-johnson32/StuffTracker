@@ -20,12 +20,16 @@ def currencyfilter(value):
 
 
 # This page displays all the products in your database.
-@app.route('/products')
+@app.route('/products', methods=['GET', 'POST'])
 def show_products():
-    productList = productsdb.GetAllProducts()
-    return render_template("products.html", products=productList)
+    orderby = None
+    if request.method == 'POST':
+        orderby = request.form['orderby']
+    productList = productsdb.GetAllProducts(orderby)
+    return render_template("products.html", products=productList, orderby=orderby)
 
 
+# The page for a particular product.
 @app.route('/products/<itemID>')
 def show_product(itemID):
     product = productsdb.GetProduct(itemID)
