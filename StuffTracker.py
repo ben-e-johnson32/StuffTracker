@@ -3,7 +3,7 @@ import productsdb
 import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = "/Users/Ben/PycharmProjects/StuffTracker/static/"
+app.config['UPLOAD_FOLDER'] = os.getcwd() + "/static/"
 
 
 # Placeholder home page - just has a link to the page that shows all products and the add new product page.
