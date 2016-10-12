@@ -1,65 +1,62 @@
+from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 import sqlite3 as lite
 import os
+
+os.chdir(os.path.dirname(__file__))
+cwd = os.getcwd()
+engine = create_engine('sqlite:////' + cwd + '/static/products.db')
+Base = declarative_base()
+Session = sessionmaker(bind=engine)
+
+
+class Product(Base):
+    __tablename__ = "Products"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    desc = Column(String)
+    price = Column(Float)
+    year_acquired = Column(Integer)
+    location = Column(String)
+    upc = Column(String)
+    image = Column(String)
 
 
 # This script created the database. I'm sure it'll change as I move forward.
 def CreateProductsTable():
-    os.chdir(os.path.dirname(__file__))
-    cwd = os.getcwd()
     db = lite.connect(cwd + '/static/products.db')
     cursor = db.cursor()
 
     cursor.execute('DROP TABLE Products')
-    cursor.execute('CREATE TABLE Products(ID INTEGER PRIMARY KEY,'
-                   'Item TEXT, Description TEXT, Price REAL, Age INTEGER,'
-                   'YearAcquired INTEGER, Location TEXT, UPC CHARACTER(20) NULL,'
-                   'Image INTEGER)')
+    cursor.execute('CREATE TABLE Products(id INTEGER PRIMARY KEY,'
+                   'name TEXT, desc TEXT, price REAL,'
+                   'year_acquired INTEGER, location TEXT, upc CHARACTER(20) NULL,'
+                   'image TEXT)')
     db.commit()
     db.close()
 
 
-# A method to add a product to the database.
 def EnterProduct(p):
-    data = (p.name, p.desc, p.price, p.age, p.year_acquired, p.location, p.upc, p.image)
-    os.chdir(os.path.dirname(__file__))
-    cwd = os.getcwd()
-    db = lite.connect(cwd + '/static/products.db')
-    cursor = db.cursor()
-
-    cursor.execute('INSERT INTO Products(Item, Description, Price, Age, YearAcquired,'
-                   'Location, UPC, Image) VALUES (?,?,?,?,?,?,?,?)', data)
-    db.commit()
-    db.close()
+    session = Session()
+    session.add(p)
+    session.commit()
+    session.close()
 
 
-# A method to retrieve one product from the database. Returns a tuple of each value in the row matching the itemID.
 def GetProduct(itemID):
-    os.chdir(os.path.dirname(__file__))
-    cwd = os.getcwd()
-    db = lite.connect(cwd + '/static/products.db')
-    cursor = db.cursor()
-
-    cursor.execute('SELECT * FROM PRODUCTS WHERE ID = (?)', (itemID,))
-    item = cursor.fetchone()
-    db.close()
-    return item
+    session = Session()
+    product = session.query(Product).filter(Product.id == itemID).first()
+    session.close()
+    return product
 
 
-# A method that gets all the products from the database.
 def GetAllProducts():
-    os.chdir(os.path.dirname(__file__))
-    cwd = os.getcwd()
-    db = lite.connect(cwd + '/static/products.db')
-    cursor = db.cursor()
+    session = Session()
+    products = []
 
-    cursor.execute('SELECT * FROM PRODUCTS')
-    rows = cursor.fetchall()
-    db.close()
-    return rows
+    for p in session.query(Product).all():
+        products.append(p)
 
-
-# p = products.Product(name="Macbook Pro", desc="This laptop looks just like a TV.", price=1200.50, age=7,
-#                      year_acquired=2009, location="Home", upc=None, image="/static/cobytv.jpg")
-# EnterProduct(p)
-# CreateProductsTable()
-# GetProduct(2)
+    session.close()
+    return products

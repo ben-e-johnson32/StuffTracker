@@ -33,7 +33,7 @@
 <body>
 {# A for loop to display all the products in the database. Loops through the dictionary
    of products that are passed to this template. #}
-{% for id, product in products.items() %}
+{% for product in products %}
     <h1 style="text-align:center;">{{ product.name }}</h1>
     <img src="{{ product.image }}">
     <table>
@@ -43,15 +43,11 @@
         </tr>
         <tr>
             <td>Price:</td>
-            <td>{{ product.price }}</td>
+            <td>{{ product.price | currencyfilter }}</td>
         </tr>
         <tr>
             <td>Location:</td>
             <td>{{ product.location }}</td>
-        </tr>
-        <tr>
-            <td>Age:</td>
-            <td>{{ product.age }}</td>
         </tr>
         <tr>
             <td>Year Acquired:</td>
@@ -63,7 +59,7 @@
         </tr>
     </table>
     {# A link to this product's own page. #}
-    <p align="right"><a href="products/{{ id }}">Go To Product Page >>></a></p>
+    <p align="right"><a href="products/{{ product.id }}">Go To Product Page >>></a></p>
 {% endfor %}
 {# Links back to the other main pages. #}
 <h2 align="center"><strong><a href="add_product">Add New Product</a></strong></h2>

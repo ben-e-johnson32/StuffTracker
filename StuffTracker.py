@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request
-import products
 import productsdb
 import os
 
@@ -15,7 +14,6 @@ def home():
 
 # Read a bit about filters - decided to try one out since I could probably use it later. Took the python formatting bit
 # from here: http://stackoverflow.com/questions/21208376/converting-float-to-dollars-and-cents
-# (not currently being used, but only because the database currently contains some garbage data that will make it crash)
 @app.template_filter()
 def currencyfilter(value):
     return '${:,.2f}'.format(value)
@@ -24,27 +22,13 @@ def currencyfilter(value):
 # This page displays all the products in your database.
 @app.route('/products')
 def show_products():
-    # Get a list of rows from the database.
-    rows = productsdb.GetAllProducts()
-    # Initialize a dictionary for the primary key and product objects.
-    productList = {}
-    # Loop through the rows from the database and rebuild them into objects, storing them in the dictionary.
-    for x in range(len(rows)):
-        product = products.Product(rows[x][1], rows[x][2], rows[x][3], rows[x][4], rows[x][5],
-                                   rows[x][6], rows[x][7], rows[x][8])
-        entry = { x + 1: product }
-        productList.update(entry)
-    # Render the template with the dictionary of products.
+    productList = productsdb.GetAllProducts()
     return render_template("products.html", products=productList)
 
 
-# Get a row from the database by its primary key. Build a Product object with the tuple that's returned,
-# then render the products.html template with that Product object.
 @app.route('/products/<itemID>')
 def show_product(itemID):
-    row = productsdb.GetProduct(itemID)
-    product = products.Product(row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
-
+    product = productsdb.GetProduct(itemID)
     return render_template("product.html", product=product)
 
 
@@ -61,9 +45,9 @@ def add_product():
 @app.route('/product_added', methods=['POST'])
 def product_added():
     response = request.form
-    newItem = products.Product(response['product'], response['description'], response['price'],
-                               response['age'], response['yearAcquired'], response['location'],
-                               response['UPC'], "/static/" + response['imageName'] + ".jpg")
+    newItem = productsdb.Product(name=response['product'], desc=response['description'], price=response['price'],
+                                 year_acquired=response['yearAcquired'], location=response['location'],
+                                 upc=response['UPC'], image="/static/" + response['imageName'] + ".jpg")
     productsdb.EnterProduct(newItem)
     file = request.files['file']
     filename = response['imageName'] + ".jpg"
