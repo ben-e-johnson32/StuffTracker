@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 import sqlite3 as lite
 import os
+from datetime import datetime
 
 os.chdir(os.path.dirname(__file__))
 cwd = os.getcwd()
@@ -89,3 +90,34 @@ def GetAllProducts(orderby):
             products.append(p)
         session.close()
         return products
+
+
+# For a future page with data about all the items you've entered. Keeps track of totals and averages. Will add extreme
+# values soon (i.e. most valuable item, oldest item, etc).
+def GetMetadata():
+    session = Session()
+    metadata = {}
+    total_count = 0
+    count_outstanding = 0
+    total_value = 0.0
+    total_age = 0
+
+    for p in session.query(Product).all():
+        total_count += 1
+        if p.location != "Home":
+            count_outstanding += 1
+        total_value += p.price
+        total_age += datetime.now().year - p.year_acquired
+
+    session.close()
+
+    average_age = total_age / total_count
+    average_value = total_value / total_count
+
+    dict_values = [{'Number of Items': total_count}, {'Items Outstanding': count_outstanding},
+                   {'Total Value': total_value}, {'Average Value': average_value}, {'Average Age': average_age}]
+
+    for value in dict_values:
+        metadata.update(value)
+
+    return metadata
