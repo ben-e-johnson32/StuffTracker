@@ -6,29 +6,7 @@
     <meta charset="UTF-8">
     <title>StuffTracker | Products</title>
     {# Figuring out design-y stuff. #}
-    <style>
-        table {
-            margin: auto;
-            border-collapse: collapse;
-            width: 75%;
-            background-color: #aaabbf;
-        }
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        img {
-            display: block;
-            margin: auto;
-            width: 40%;
-            max-height: 340px;
-            max-width: 330px;
-        }
-        body {
-            background-color: #cac4c9;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
 </head>
 <body>
 {# A for loop to display all the products in the database. Loops through the dictionary
@@ -59,11 +37,13 @@
         </tr>
     </table>
     {# A link to this product's own page. #}
-    <p align="right"><a href="products/{{ product.id }}">Go To Product Page >>></a></p>
+    <h2 align="center"><a href="products/{{ product.id }}">Go To Product Page</a></h2>
 {% endfor %}
+<br><br><br>
 {# Links back to the other main pages. #}
-<h2 align="center"><strong><a href="add_product">Add New Product</a></strong></h2>
+<h3 align="center"><strong><a href="add_product">Add New Product</a></strong></h3>
 <p align="center"><a href="/">Return to Home Page</a></p>
+<p align="center"><a href="/inventory_stats">View Inventory Statistics</a></p>
 {# Radio buttons allowing the user to choose the order in which the products appear. #}
 <form action="/products", method="post">
     <p align="center">

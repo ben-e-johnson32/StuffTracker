@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StuffTracker | Inventory Statistics</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
+</head>
+<body>
+<h1 align="center"><strong>Inventory Statistics</strong></h1>
+<table>
+    <tr><td>Number of Items:</td><td>{{ metadata.get('Number of Items') }}</td></tr>
+    <tr><td>Items Outstanding:</td><td>{{ metadata.get('Items Outstanding') }}</td></tr>
+    <tr><td>Value of Outstanding Items</td><td>{{ metadata.get('Value Outstanding') | currencyfilter }}</td></tr>
+    <tr><td>Total Value:</td><td>{{ metadata.get('Total Value') | currencyfilter }}</td></tr>
+    <tr><td>Average Value:</td><td>{{ metadata.get('Average Value') | currencyfilter }}</td></tr>
+    <tr><td>Average Age:</td><td>{{ metadata.get('Average Age') | onedecimalfilter }} years</td></tr>
+</table>
+<h1 align="center">List of Outstanding Items</h1>
+<table>
+<tr><th>Item</th><th>Location</th></tr>
+    {% for item in metadata.get('Outstanding Items List') %}
+        <tr><td style="text-align:center"><a href='/products/{{ item.id }}'>{{ item.name }}</a></td>
+            <td style="text-align:center">{{ item.location }}</td></tr>
+    {% endfor %}
+</table>
+<h1 align="center"><a href="/">Return to Home Page</a></h1>
+<h2 align="center"><a href="{{ url_for('show_products') }}">Return to Products Page</a></h2>
+</body>
+</html>

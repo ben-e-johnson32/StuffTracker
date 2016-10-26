@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>StuffTracker | Product Added</title>
+    <title>StuffTracker | Edit Successful</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
 </head>
 <body>
-<h1>{{ product }} added to your inventory.</h1>
-<p><a href="add_product">Add Another Item</a></p>
-<p><a href="products">View All Products</a></p>
+<h4 align="center">Edit Successful</h4>
+<h2 align="center"><a href="/products/{{ product.id }}">Return to Product Page</a></h2>
 </body>
 </html>

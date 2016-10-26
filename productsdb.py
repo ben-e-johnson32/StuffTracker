@@ -59,6 +59,7 @@ def GetProduct(itemID):
 def GetAllProducts(orderby):
     session = Session()
     products = []
+
     # A big if/else to determine the order of the product list that's returned.
     if orderby is None:
         for p in session.query(Product).all():
@@ -92,32 +93,67 @@ def GetAllProducts(orderby):
         return products
 
 
-# For a future page with data about all the items you've entered. Keeps track of totals and averages. Will add extreme
-# values soon (i.e. most valuable item, oldest item, etc).
+# For a future page with data about all the items you've entered. Keeps track of totals and averages.
+# Also gives a list of all outstanding products so they can be displayed on the stats page too.
 def GetMetadata():
     session = Session()
     metadata = {}
     total_count = 0
     count_outstanding = 0
+    value_outstanding = 0
+    outstanding_items_list = []
     total_value = 0.0
     total_age = 0
 
+    # Loop through all products in the database and update counts and totals.
     for p in session.query(Product).all():
         total_count += 1
         if p.location != "Home":
             count_outstanding += 1
+            value_outstanding += p.price
+            outstanding_items_list.append(p)
         total_value += p.price
         total_age += datetime.now().year - p.year_acquired
 
     session.close()
 
+    # Calculate averages.
     average_age = total_age / total_count
     average_value = total_value / total_count
 
+    # Create a bunch of dict entries with the data we have.
     dict_values = [{'Number of Items': total_count}, {'Items Outstanding': count_outstanding},
-                   {'Total Value': total_value}, {'Average Value': average_value}, {'Average Age': average_age}]
+                   {'Value Outstanding': value_outstanding}, {'Total Value': total_value},
+                   {'Average Value': average_value}, {'Average Age': average_age},
+                   {'Outstanding Items List': outstanding_items_list}]
 
+    # Put the dict entries in the dictionary then return it.
     for value in dict_values:
         metadata.update(value)
 
     return metadata
+
+
+# A method for updating the product. Currently goes through and updates all columns even if they were unchanged.
+def UpdateProduct(itemID, response):
+    session = Session()
+
+    for k, v in response.items():
+        session.query(Product).filter_by(id=itemID).update({k: v})
+
+    session.commit()
+    product = GetProduct(itemID)
+    session.close()
+
+    return product
+
+
+# A method to make sure the year and price values are in the right format.
+def isValidEdit(p):
+    try:
+        p = dict(p)
+        int(p['year_acquired'][0])
+        float(p['price'][0])
+        return True
+    except ValueError:
+        return False

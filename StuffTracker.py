@@ -3,6 +3,7 @@ import productsdb
 import os
 
 app = Flask(__name__)
+# TODO: Make file paths cross-platform (only work in OSX)
 app.config['UPLOAD_FOLDER'] = os.getcwd() + "/static/"
 
 
@@ -17,6 +18,12 @@ def home():
 @app.template_filter()
 def currencyfilter(value):
     return '${:,.2f}'.format(value)
+
+
+# Filter that rounds to one decimal place.
+@app.template_filter()
+def onedecimalfilter(value):
+    return round(value, 1)
 
 
 # This page displays all the products in your database.
@@ -57,6 +64,34 @@ def product_added():
     filename = response['imageName'] + ".jpg"
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     return render_template("product_added.html", product=response['product'])
+
+
+# A page that shows statistics about the entire inventory.
+@app.route('/inventory_stats')
+def show_stats():
+    metadata = productsdb.GetMetadata()
+    return render_template('inventory_stats.html', metadata=metadata)
+
+
+# A page for editing a product.
+@app.route('/products/<itemID>/edit')
+def edit_product(itemID):
+    p = productsdb.GetProduct(itemID)
+    return render_template('edit_product.html', product=p)
+
+
+# The page the user lands on after editing a product.
+@app.route('/products/<itemID>/edit_successful', methods=["POST"])
+def edit_successful(itemID):
+    response = request.form
+    # Check if the year is an integer and the price is a float. Everything else is just a string.
+    if productsdb.isValidEdit(response):
+        editedP = productsdb.UpdateProduct(itemID, response)
+        return render_template('edit_successful.html', product=editedP)
+    # If there's bad data, re-render the edit product page and display a somewhat helpful error message.
+    else:
+        p = productsdb.GetProduct(itemID)
+        return render_template('edit_product.html', product=p, error=True)
 
 
 if __name__ == '__main__':

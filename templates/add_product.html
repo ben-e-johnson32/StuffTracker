@@ -3,27 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>StuffTracker | Add Product</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
 </head>
 <body>
 <h1 style="text-align:center;">Add Product</h1>
 {# Getting input. Trickiest part was getting the file uploading to work. #}
 <form action="/product_added" method="post" enctype="multipart/form-data">
-    Item:<br>
-    <input name="product" type="text"><br>
-    Description:<br>
-    <input name="description" type="text"><br>
-    Price:<br>
-    <input name="price" type="text"><br>
-    Year Acquired:<br>
-    <input name="yearAcquired" type="text"><br>
-    Location:<br>
-    <input name="location" type="text"><br>
-    UPC:<br>
-    <input name="UPC" type="text"><br>
-    Image:<br>
-    <input name="imageName" type="text"><br><br>
-    <input name="file" type="file">
-    <input type="submit" value="Add Item">
+    <div style="text-align:center">
+        Item:<br>
+        <input name="product" type="text"><br>
+        Description:<br>
+        <input name="description" type="text"><br>
+        Price:<br>
+        <input name="price" type="text"><br>
+        Year Acquired:<br>
+        <input name="yearAcquired" type="text"><br>
+        Location:<br>
+        <input name="location" type="text"><br>
+        UPC:<br>
+        <input name="UPC" type="text"><br>
+        Image:<br>
+        <input name="imageName" type="text"><br><br>
+        <input name="file" type="file">
+        <input type="submit" value="Add Item">
+    </div>
 </form>
 <p align="center"><a href="{{ url_for("show_products") }}">Return to Products Page</a></p>
 <p align="center"><a href="/">Return to Home Page</a></p>

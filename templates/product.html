@@ -7,22 +7,34 @@
 <head>
     <meta charset="UTF-8">
     <title>StuffTracker | {{ product.name }}</title>
-    <script>document.createElement("myHero")</script>
-    <style>
-        myHero {
-            display: block;
-            background-color: #aaabbf;
-            padding: 50px;
-            font-size: 30px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
 </head>
 <body>
 <h1 style="text-align:center;">{{ product.name }}</h1>
 <img src="{{ product.image }}">
-<myHero>{{ product.desc }}</myHero>
-<p><strong>Price: </strong> {{ product.price | currencyfilter }}</p>
-<p><strong>Location: </strong> {{ product.location }}</p>
+<table>
+    <tr>
+        <td>Description:</td>
+        <td>{{ product.desc }}</td>
+    </tr>
+    <tr>
+        <td>Price:</td>
+        <td>{{ product.price | currencyfilter }}</td>
+    </tr>
+    <tr>
+        <td>Location:</td>
+        <td>{{ product.location }}</td>
+    </tr>
+    <tr>
+        <td>Year Acquired:</td>
+        <td>{{ product.year_acquired }}</td>
+    </tr>
+    <tr>
+        <td>UPC:</td>
+        <td>{{ product.upc }}</td>
+    </tr>
+</table>
+<h3 align="center"><a href="/products/{{ product.id }}/edit">Edit This Product</a></h3>
 <p align="center"><a href="{{ url_for('show_products') }}">Return to Products Page</a></p>
 <p align="center"><a href="/">Return to Home Page</a></p>
 </body>

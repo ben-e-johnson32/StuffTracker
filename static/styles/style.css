@@ -1,0 +1,21 @@
+table {
+    margin: auto;
+    border-collapse: collapse;
+    width: 75%;
+    background-color: #aaabbf;
+}
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+img {
+    display: block;
+    margin: auto;
+    width: 40%;
+    max-height: 340px;
+    max-width: 330px;
+}
+body {
+    background-color: #cac4c9;
+}
